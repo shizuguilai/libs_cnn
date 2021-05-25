@@ -7,12 +7,13 @@ from torch.autograd import Variable
 from torch.utils.data import DataLoader  
 import torchvision.datasets
 import torchvision.transforms
+import datetime
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
 #transform picture to appropriate form
 batch_size = 200
 category = 16
-folder = './libs-split_picture'
+folder = './libs-split_picture_10_mean'
 transfrom = torchvision.transforms.Compose([torchvision.transforms.ToTensor(), torchvision.transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])])
 train_dataset = torchvision.datasets.ImageFolder((folder + '/train'), transform=transfrom)
 train_loader = torch.utils.data.DataLoader(dataset = train_dataset, batch_size = batch_size, shuffle = True)
@@ -60,6 +61,7 @@ model = SimpleCNN()
 criterion = torch.nn.CrossEntropyLoss()
 optimizer = torch.optim.Adam(model.parameters())
 print(model)
+starttime = datetime.datetime.now()
 
 #study
 num_epochs = 40
@@ -100,16 +102,17 @@ for images, labels in test_loader:
 	total += labels.size(0)
 	correct += (predicted == labels).sum().item()
 
-	
+endtime = datetime.datetime.now()
 accuracy = correct  / total
 print('correct: ',correct)
 print('total: ', total)
 print('accuracy: ',accuracy)
+print('all_time: ',(endtime - starttime).seconds)
 
 print('whether to  save or not? y/Y')
 judge = 'y'
 if judge == 'y' or judge == 'Y' :
-    torch.save(model, 'model_40.pth')
+    torch.save(model, 'libs-model_40.pth')
 
 
 
